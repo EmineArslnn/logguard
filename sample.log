@@ -1,0 +1,8 @@
+
+Nov 19 10:15:12 server sshd[1001]: Failed password for root from 192.0.2.10 port 52001 ssh2
+Nov 19 10:16:08 server sshd[1002]: Failed password for admin from 192.0.2.10 port 52002 ssh2
+Nov 19 10:17:34 server sshd[1003]: Failed password for root from 192.0.2.10 port 52003 ssh2
+Nov 19 10:18:21 server sshd[1004]: Failed password for test from 198.51.100.7 port 52004 ssh2
+Nov 19 10:19:45 server sshd[1005]: Failed password for user from 198.51.100.7 port 52005 ssh2
+Nov 19 10:20:13 server sshd[1006]: Invalid user guest from 203.0.113.25 port 52006
+Nov 19 10:21:30 server sshd[1007]: Accepted password for emine from 192.0.2.20 port 52007 ssh2
