@@ -1,4 +1,3 @@
-
 import sys
 import tempfile
 import unittest
@@ -82,7 +81,7 @@ class TestLogGuard(unittest.TestCase):
         sonuc = count_failed_attempts_by_ip(kayitlar)
 
         # Uc deneme yapan IP supheli esigine ulasmis olmali.
-        self.assertGreaterEqual(
+        self.assertEqual(
             sonuc["192.0.2.10"],
             SUSPICIOUS_THRESHOLD
         )
@@ -95,14 +94,16 @@ class TestLogGuard(unittest.TestCase):
 
     def test_gecersiz_ipyi_atla(self):
 
-        # Gecersiz bir IP adresi ekleyip sonucu kontrol ediyoruz.
+        # Gecersiz ve gecerli bir IP adresini birlikte kontrol ediyoruz.
         kayitlar = [
-            "Failed password for root from invalid-ip port 22 ssh2"
+            "Failed password for root from invalid-ip port 22 ssh2",
+            "Failed password for admin from 192.0.2.10 port 22 ssh2"
         ]
 
         sonuc = count_failed_attempts_by_ip(kayitlar)
 
-        self.assertEqual(sonuc, {})
+        # Gecersiz IP atlanmali, gecerli IP ise sayilmali.
+        self.assertEqual(sonuc, {"192.0.2.10": 1})
 
     def test_bos_kayitlar(self):
 
@@ -110,6 +111,47 @@ class TestLogGuard(unittest.TestCase):
         sonuc = count_failed_attempts_by_ip([])
 
         self.assertEqual(sonuc, {})
+
+    def test_basarisiz_giris_yoksa_bos_liste_don(self):
+
+        # Basarili giris ve normal bir log kaydi hazirliyoruz.
+        self.log_yolu.write_text(
+            "Accepted password for admin from 192.0.2.20 port 22 ssh2\n"
+            "System started successfully\n",
+            encoding="utf-8"
+        )
+
+        # Basarisiz giris bulunmadigi icin bos liste donmeli.
+        kayitlar = find_failed_logins(self.log_yolu)
+
+        self.assertEqual(kayitlar, [])
+
+    def test_from_bilgisi_olmayan_kaydi_atla(self):
+
+        # Bazi kayitlarda IP bilgisi eksik veya hic bulunmuyor.
+        kayitlar = [
+            "Failed password for root port 22 ssh2",
+            "Failed password for admin from",
+            "Failed password for user from 192.0.2.10 port 22 ssh2"
+        ]
+
+        sonuc = count_failed_attempts_by_ip(kayitlar)
+
+        # Eksik bilgiler atlanmali, gecerli IP sayilmis olmali.
+        self.assertEqual(sonuc, {"192.0.2.10": 1})
+
+    def test_ipv6_adresini_say(self):
+
+        # Gecerli bir IPv6 adresinden gelen girisleri hazirliyoruz.
+        kayitlar = [
+            "Failed password for root from 2001:db8::1 port 22 ssh2",
+            "Invalid user guest from 2001:db8::1 port 23"
+        ]
+
+        sonuc = count_failed_attempts_by_ip(kayitlar)
+
+        # Ayni IPv6 adresinden iki giris gelmis olmali.
+        self.assertEqual(sonuc["2001:db8::1"], 2)
 
 
 # Dosya calistirilinca testleri baslatiyoruz.
