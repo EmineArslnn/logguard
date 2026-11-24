@@ -164,23 +164,14 @@ Projenin GitHub Actions iş akışı, `main` dalına yapılan push ve pull reque
 
 
 
-## Proje Yönetimi
-
+## Proje Panosu
 
 GitHub Projects panomuz: [LogGuard Proje Panosu](https://github.com/users/EmineArslnn/projects/2)
 
-
 ## Geliştirici
 
-
-
-Emine Arslan
-
-
-
-Harran Üniversitesi – Bilgisayar Mühendisliği
-
-
-
-
+- **Ad Soyad:** Emine Arslan
+- **Üniversite:** Harran Üniversitesi
+- **Bölüm:** Bilgisayar Mühendisliği
+- **Sınıf:** 4. Sınıf
 
